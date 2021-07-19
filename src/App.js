@@ -10,9 +10,11 @@ const Weather = () => {
 	const [userWeather, setUserWeather] = useState([]);
 
 	const onChangeHandlerCity = (event) => {
+		event.preventDefault();
 		setCity(event.target.value);
 	};
 	const onChangeHandlerState = (event) => {
+		event.preventDefault();
 		setState(event.target.value);
 	};
 	const apiFetch = () => {
