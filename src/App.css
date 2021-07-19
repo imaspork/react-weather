@@ -12,7 +12,6 @@ body {
 }
 
 #form-container {
-	padding-top: 20em;
 	height: 100%;
 	display: flex;
 	justify-content: center;
@@ -20,6 +19,7 @@ body {
 }
 
 #contain-all {
+	height: 100vh;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;

@@ -31,9 +31,6 @@ const Weather = () => {
 						temperature: response.data.data.current.weather.tp,
 						humidity: response.data.data.current.weather.hu,
 					});
-					console.log(
-						`${userWeather.aqius} | ${userWeather.temperature} | ${userWeather.humidity}`
-					);
 				});
 		}
 	};
@@ -63,7 +60,17 @@ const Weather = () => {
 				</form>
 				<button onClick={apiFetch}>Check Weather Quality</button>
 			</div>
-			<div></div>
+			<div>
+				{!userWeather.aqius ? (
+					<div>loading... </div>
+				) : (
+					<div>
+						<div>{userWeather.aqius}</div>
+						<div>{userWeather.temperature}</div>
+						<div>{userWeather.humidity}</div>
+					</div>
+				)}
+			</div>
 		</div>
 	);
 };
