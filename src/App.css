@@ -1,0 +1,27 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	height: 100%;
+}
+body {
+	height: 100vh;
+	background-color: aqua;
+}
+
+#form-container {
+	padding-top: 20em;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#contain-all {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
