@@ -8,7 +8,6 @@ html {
 }
 body {
 	height: 100vh;
-	background-color: aqua;
 }
 
 #form-container {
@@ -19,9 +18,35 @@ body {
 }
 
 #contain-all {
+	background-color: white;
 	height: 100vh;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+}
+/* 0-50 */
+.excellent {
+	background-color: #a2ef61;
+}
+
+/* 51-100 */
+.good {
+	background-color: #ffec50;
+}
+/* 101-150 */
+.bad {
+	background-color: #ffb14c;
+}
+/* 151-200 */
+.veryBad {
+	background-color: #ff6275;
+}
+/* 201-300 */
+.terrible {
+	background-color: #b36ebe;
+}
+/* 301-500 */
+.threatening {
+	background-color: #955476;
 }
