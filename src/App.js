@@ -1,4 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {
+	Input,
+	Stack,
+	InputLeftAddon,
+	Icon,
+	InputGroup,
+	InputLeftElement,
+	Button,
+	Container,
+	FormControl,
+	Divider,
+	useColorMode,
+	VStack,
+	IconButton,
+} from "@chakra-ui/react";
+import { FaSun, FaMoon } from "react-icons/fa";
 import "./App.css";
 import axios from "axios";
 import excellent from "../src/excellent.svg";
@@ -13,6 +29,14 @@ const Weather = () => {
 	const [userCity, setCity] = useState("");
 	const [userState, setState] = useState("");
 	const [userWeather, setUserWeather] = useState([]);
+
+	useEffect(() => {
+		const currentWeather = localStorage.getItem("Weather-Obj");
+		if (currentWeather) {
+			setUserWeather(JSON.parse(currentWeather));
+		}
+	}, []);
+
 	const onChangeHandlerCity = (event) => {
 		event.preventDefault();
 		setCity(event.target.value);
@@ -31,7 +55,8 @@ const Weather = () => {
 				)
 				.then((response) => {
 					let weatherObj = {
-						location: `${userCity}, ${userState}`,
+						locationCity: userCity,
+						locationState: userState,
 						aqius: response.data.data.current.pollution.aqius,
 						temperature: response.data.data.current.weather.tp,
 						humidity: response.data.data.current.weather.hu,
@@ -42,6 +67,8 @@ const Weather = () => {
 					);
 
 					setUserWeather({
+						locationCity: userCity,
+						locationState: userCity,
 						aqius: weatherObj.aqius,
 						temperature: weatherObj.temperature,
 						humidity: weatherObj.humidity,
@@ -102,45 +129,80 @@ const Weather = () => {
 			}
 		}
 	}
+	const { colorMode, toggleColorMode } = useColorMode();
 	return (
-		<div id="contain-all" className={airQualityText()}>
-			<div id="form-container">
-				<form onSubmit>
-					<label id="label">
-						City:
-						<input
-							type="text"
-							placeholder="Your City"
-							onChange={onChangeHandlerCity}
-							value={userCity}
-						/>
-					</label>
-					<label>
-						State:
-						<input
-							type="text"
-							placeholder="Your State"
-							onChange={onChangeHandlerState}
-							value={userState}
-						/>
-					</label>
+		<div
+			id="contain-all"
+			className={userWeather.aqius ? airQualityText() : "null"}
+		>
+			<VStack>
+				<IconButton
+					isRound={true}
+					size="lg"
+					alignSelf="flex-end"
+					icon={<FaSun />}
+					onClick={toggleColorMode}
+				></IconButton>
+			</VStack>
+			<Container>
+				<form>
+					<Stack spacing={3}>
+						<FormControl isRequired>
+							<InputGroup>
+								<InputLeftElement
+									children={<Icon name="City" />}
+								/>
+								<Input
+									type="city"
+									placeholder="City"
+									aria-label="City"
+									onChange={onChangeHandlerCity}
+									value={userCity}
+								/>
+							</InputGroup>
+						</FormControl>
+
+						<FormControl isRequired>
+							<InputGroup>
+								<InputLeftElement
+									children={<Icon name="State" />}
+								/>
+								<Input
+									type="state"
+									placeholder="State"
+									aria-label="State"
+									onChange={onChangeHandlerState}
+									value={userState}
+								/>
+							</InputGroup>
+						</FormControl>
+						<Divider />
+						<Button variant="solid" onClick={apiFetch}>
+							Check Quality
+						</Button>
+					</Stack>
 				</form>
-				<button onClick={apiFetch}>Check Weather Quality</button>
-			</div>
-			<div>
-				{!userWeather.aqius ? (
-					<div></div>
-				) : (
-					<div>
-						<div>Air Quality: {userWeather.aqius}</div>
-						<div>Temperature: {userWeather.temperature}c&deg;</div>
-						<div>Humidity: {userWeather.humidity}%</div>
-					</div>
-				)}
-			</div>
-			<div>
-				<img src={!userWeather.aqius ? null : airQualityImage()}></img>
-			</div>
+
+				<div>
+					<h1>{userWeather.locationCity}</h1>
+					{!userWeather.aqius ? (
+						<div></div>
+					) : (
+						<div>
+							<div>Air Quality: {userWeather.aqius}</div>
+							<div>
+								Temperature: {userWeather.temperature}c&deg;
+							</div>
+							<div>Humidity: {userWeather.humidity}%</div>
+						</div>
+					)}
+				</div>
+				<div>
+					<img
+						src={!userWeather.aqius ? null : airQualityImage()}
+					></img>
+				</div>
+			</Container>
 		</div>
 	);
 };

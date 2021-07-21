@@ -1,10 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Weather from "./App";
+import { ChakraProvider, theme, ColorModeScript } from "@chakra-ui/react";
 
 ReactDOM.render(
 	<React.StrictMode>
-		<Weather />
+		<ChakraProvider>
+			<ColorModeScript initialColorMode={theme.config.initialColorMode} />
+			<Weather />
+		</ChakraProvider>
 	</React.StrictMode>,
 	document.getElementById("root")
 );
