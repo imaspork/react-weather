@@ -17,12 +17,16 @@ import {
 import { FaSun, FaMoon } from "react-icons/fa";
 import "./App.css";
 import axios from "axios";
-import excellent from "../src/excellent.svg";
-import good from "../src/good.svg";
-import bad from "../src/bad.svg";
-import veryBad from "../src/veryBad.svg";
-import terrible from "../src/terrible.svg";
-import threatening from "../src/threatening.svg";
+
+import {
+	SvgExcellent,
+	SvgGood,
+	SvgBad,
+	SvgVeryBad,
+	SvgTerrible,
+	SvgThreatening,
+} from "./Svg";
+
 require("dotenv").config();
 
 const Weather = () => {
@@ -79,24 +83,24 @@ const Weather = () => {
 
 	function airQualityImage() {
 		if (userWeather.aqius <= 50) {
-			return excellent;
+			return <SvgExcellent fill="#a2ef61" />;
 		} else {
 			if (userWeather.aqius >= 51 && userWeather.aqius <= 100) {
-				return good;
+				return <SvgGood fill="#ffec50" />;
 			} else {
 				if (userWeather.aqius >= 101 && userWeather.aqius <= 150) {
-					return bad;
+					return <SvgBad fill="#ffb14c" />;
 				} else {
 					if (userWeather.aqius >= 151 && userWeather.aqius <= 200) {
-						return veryBad;
+						return <SvgVeryBad fill="#ff6275" />;
 					} else {
 						if (
 							userWeather.aqius >= 201 &&
 							userWeather.aqius <= 300
 						) {
-							return terrible;
+							return <SvgTerrible fill="#b36ebe" />;
 						} else {
-							return threatening;
+							return <SvgThreatening fill="#955476" />;
 						}
 					}
 				}
@@ -131,10 +135,7 @@ const Weather = () => {
 	}
 	const { colorMode, toggleColorMode } = useColorMode();
 	return (
-		<div
-			id="contain-all"
-			className={userWeather.aqius ? airQualityText() : "null"}
-		>
+		<div id="contain-all">
 			<VStack>
 				<IconButton
 					isRound={true}
@@ -198,9 +199,7 @@ const Weather = () => {
 					)}
 				</div>
 				<div>
-					<img
-						src={!userWeather.aqius ? null : airQualityImage()}
-					></img>
+					<div>{!userWeather.aqius ? null : airQualityImage()}</div>
 				</div>
 			</Container>
 		</div>
