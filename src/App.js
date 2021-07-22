@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
 	Input,
 	Stack,
-	InputLeftAddon,
 	Icon,
 	InputGroup,
 	InputLeftElement,
@@ -13,7 +12,10 @@ import {
 	useColorMode,
 	VStack,
 	IconButton,
+	Text,
+	Flex,
 } from "@chakra-ui/react";
+import { EditIcon } from "@chakra-ui/icons";
 import { FaSun, FaMoon } from "react-icons/fa";
 import "./App.css";
 import axios from "axios";
@@ -33,13 +35,7 @@ const Weather = () => {
 	const [userCity, setCity] = useState("");
 	const [userState, setState] = useState("");
 	const [userWeather, setUserWeather] = useState([]);
-
-	useEffect(() => {
-		const currentWeather = localStorage.getItem("Weather-Obj");
-		if (currentWeather) {
-			setUserWeather(JSON.parse(currentWeather));
-		}
-	}, []);
+	const [fetchStatus, setFetchStatus] = useState("success");
 
 	const onChangeHandlerCity = (event) => {
 		event.preventDefault();
@@ -52,6 +48,8 @@ const Weather = () => {
 	const apiFetch = () => {
 		if (userCity.length === 0 || userState.length === 0) {
 			console.log("Please enter a valid city");
+			setFetchStatus("false");
+			console.log(fetchStatus);
 		} else {
 			axios
 				.get(
@@ -59,24 +57,28 @@ const Weather = () => {
 				)
 				.then((response) => {
 					let weatherObj = {
-						locationCity: userCity,
-						locationState: userState,
+						locationCity: response.data.data.city,
+						locationState: response.data.data.state,
 						aqius: response.data.data.current.pollution.aqius,
 						temperature: response.data.data.current.weather.tp,
 						humidity: response.data.data.current.weather.hu,
 					};
+					setFetchStatus("success");
 					localStorage.setItem(
 						"Weather-Obj",
 						JSON.stringify(weatherObj)
 					);
 
 					setUserWeather({
-						locationCity: userCity,
-						locationState: userCity,
+						locationCity: response.data.data.city,
+						locationState: response.data.data.state,
 						aqius: weatherObj.aqius,
 						temperature: weatherObj.temperature,
 						humidity: weatherObj.humidity,
 					});
+				})
+				.catch((error) => {
+					setFetchStatus(error.response.request.status);
 				});
 		}
 	};
@@ -134,9 +136,18 @@ const Weather = () => {
 		}
 	}
 	const { colorMode, toggleColorMode } = useColorMode();
+
+	function checkFetchStatus() {
+		if (fetchStatus === "success") {
+			return "";
+		} else {
+			return "Please try again.";
+		}
+	}
+
 	return (
-		<div id="contain-all">
-			<VStack>
+		<VStack>
+			<Flex alignSelf="flex-end" p="3">
 				<IconButton
 					isRound={true}
 					size="lg"
@@ -144,15 +155,19 @@ const Weather = () => {
 					icon={<FaSun />}
 					onClick={toggleColorMode}
 				></IconButton>
-			</VStack>
+			</Flex>
+
+			<Container maxW="container.xl" centerContent p="10">
+				<Text fontSize="6xl" fontWeight="700">
+					Check Local Air Quality
+				</Text>
+			</Container>
 			<Container>
-				<form>
+				<form action="submit">
 					<Stack spacing={3}>
 						<FormControl isRequired>
 							<InputGroup>
-								<InputLeftElement
-									children={<Icon name="City" />}
-								/>
+								<InputLeftElement children={<EditIcon />} />
 								<Input
 									type="city"
 									placeholder="City"
@@ -162,12 +177,9 @@ const Weather = () => {
 								/>
 							</InputGroup>
 						</FormControl>
-
 						<FormControl isRequired>
 							<InputGroup>
-								<InputLeftElement
-									children={<Icon name="State" />}
-								/>
+								<InputLeftElement children={<EditIcon />} />
 								<Input
 									type="state"
 									placeholder="State"
@@ -181,28 +193,33 @@ const Weather = () => {
 						<Button variant="solid" onClick={apiFetch}>
 							Check Quality
 						</Button>
+						<Text as="i" textAlign={"center"} color="red.500">
+							{checkFetchStatus()}
+						</Text>
 					</Stack>
 				</form>
 
-				<div>
-					<h1>{userWeather.locationCity}</h1>
+				<VStack spacing="4">
+					<Stack p="4">
+						{!userWeather.aqius ? null : airQualityImage()}
+					</Stack>
+					<Text fontSize="4xl">{userWeather.locationCity}</Text>
 					{!userWeather.aqius ? (
 						<div></div>
 					) : (
-						<div>
+						<VStack spacing="4">
 							<div>Air Quality: {userWeather.aqius}</div>
 							<div>
 								Temperature: {userWeather.temperature}c&deg;
 							</div>
 							<div>Humidity: {userWeather.humidity}%</div>
-						</div>
+						</VStack>
 					)}
-				</div>
-				<div>
-					<div>{!userWeather.aqius ? null : airQualityImage()}</div>
-				</div>
+
+					<div></div>
+				</VStack>
 			</Container>
-		</div>
+		</VStack>
 	);
 };
 
