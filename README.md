@@ -1,4 +1,5 @@
 # AQI Checker
+# Published on eminent-value.surge.sh
 
 This is my first iteration production build of my air quality checker. This page utilizes an API and fetches local data based on user input.
 
